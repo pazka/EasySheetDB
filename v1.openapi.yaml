@@ -1,0 +1,88 @@
+openapi: 3.0.3
+info:
+  title: EasySheetDB
+  description: |-
+    EasySheetDB to convert authorized sheets to processable datajson data for front applications
+  contact:
+    email: alexandre.weisser@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: easySheetdb.hosh.it
+tags:
+  - name: project fetch
+paths:
+  /{project_name}:
+    get:
+      tags:
+        - project fetch
+      summary: Fetch project sheets names
+      operationId: fetchProjectSheetNames
+      parameters:
+        - name: project_name
+          in: path
+          description: project name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+        
+  /{project_name}/{sheet_name}:
+    get:
+      tags:
+        - project fetch
+      summary: Fetch project data of one sheet
+      operationId: fetchProjectData
+      parameters:
+        - name: project_name
+          in: path
+          description: project name
+          required: true
+          schema:
+            type: string
+        - name: sheet_name
+          in: path
+          description: sheet name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectDataSheet'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+components:
+  schemas:
+    ProjectDataSheet:
+      type: object
+      properties:
+        projectName :
+          type: string
+        sheetName :
+          type: string
+        data :
+          type: object
